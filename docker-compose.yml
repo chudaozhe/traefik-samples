@@ -1,0 +1,20 @@
+version: "3.7"
+
+networks:
+  web-network:
+
+services:
+  reverse-proxy:
+    image: traefik:v3.0
+    command:
+      - "--configFile=/etc/traefik/traefik.yml"  # 使用静态配置文件
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./dynamic.yml:/etc/traefik/dynamic.yml
+    networks:
+      - web-network

@@ -1,0 +1,13 @@
+# 动态配置文件
+# https://doc.traefik.io/traefik/reference/dynamic-configuration/file/
+
+http:
+  routers:
+    traefik-dashboard:
+      entrypoints: "http"
+      rule: "Host(`traefik.uqiantu.com`)"
+      service: "dashboard@internal"
+    traefik-dashboard-api:
+      entrypoints: "http"
+      rule: "Host(`traefik.uqiantu.com`) && PathPrefix(`/api`)"
+      service: "api@internal"

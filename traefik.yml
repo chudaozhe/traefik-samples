@@ -1,0 +1,22 @@
+# 静态配置文件
+# https://docs.traefik.io/reference/static-configuration/file/
+log:
+   level: DEBUG
+
+api:
+  dashboard: true
+  insecure: true
+
+entryPoints:
+  http:
+    address: ":80"
+  https:
+    address: ":443"
+
+providers:
+  file:
+    filename: /etc/traefik/dynamic.yml
+    watch: true
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: true
