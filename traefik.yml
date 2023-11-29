@@ -10,8 +10,15 @@ api:
 entryPoints:
   http:
     address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: https
+          scheme: https
   https:
     address: ":443"
+    http:
+      tls: {}
 
 providers:
   file:
@@ -20,3 +27,11 @@ providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: true
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: chudaozhe@outlook.com  # 用您的邮箱替换
+      storage: acme.json
+      httpChallenge:
+        entryPoint: http

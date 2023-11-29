@@ -4,10 +4,14 @@
 http:
   routers:
     traefik-dashboard:
-      entrypoints: "http"
+      entrypoints: "https"
       rule: "Host(`traefik.uqiantu.com`)"
       service: "dashboard@internal"
+      tls:
+        certResolver: myresolver
     traefik-dashboard-api:
-      entrypoints: "http"
+      entrypoints: "https"
       rule: "Host(`traefik.uqiantu.com`) && PathPrefix(`/api`)"
       service: "api@internal"
+      tls:
+        certResolver: myresolver
