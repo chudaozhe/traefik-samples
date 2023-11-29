@@ -8,6 +8,9 @@ services:
     image: traefik:v3.0
     command:
       - "--configFile=/etc/traefik/traefik.yml"  # 使用静态配置文件
+      - "/bin/sh"
+      - "-c"
+      - "chmod 600 /acme.json && /entrypoint.sh"
     ports:
       - "80:80"
       - "443:443"
