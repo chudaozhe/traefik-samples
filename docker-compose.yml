@@ -22,3 +22,29 @@ services:
       - ./data/acme.json:/acme.json
     networks:
       - web-network
+
+  docker-nextcloud:
+    image: nextcloud:27.1.4-apache
+    container_name: docker-nextcloud
+    restart: always
+    tty: true
+    volumes:
+      - ./nextcloud/backup:/var/www/backup
+      - ./nextcloud/data:/var/www/html
+    environment:
+      - REDIS_HOST=172.24.92.213
+#      - REDIS_HOST_PORT=6379
+#      - REDIS_HOST_PASSWORD=
+      - MYSQL_HOST=rm-bp1rzlpmxk717y499.mysql.rds.aliyuncs.com
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=kajqo5-vutJyg-pistat
+    labels:
+      - "traefik.http.routers.nextcloud.entrypoints=http"
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.uqiantu.com`)"
+
+      - "traefik.http.routers.nextcloud-secure.entrypoints=https"
+      - "traefik.http.routers.nextcloud-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.nextcloud-secure.rule=Host(`nextcloud.uqiantu.com`)"
+    networks:
+      - web-network
