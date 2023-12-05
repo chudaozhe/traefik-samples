@@ -11,8 +11,8 @@ services:
     restart: always
     tty: true
     volumes:
-      - ./nextcloud/backup:/var/www/backup
-      - ./nextcloud/data:/var/www/html
+      - ./backup:/var/www/backup
+      - ./data:/var/www/html
     environment:
       - REDIS_HOST=172.24.92.213
 #      - REDIS_HOST_PORT=6379
@@ -44,7 +44,7 @@ services:
     restart: always
     tty: true
     volumes:
-      - ./nextcloud/data:/var/www/html
+      - ./data:/var/www/html
     entrypoint: /cron.sh
     networks:
       - traefik_web-network
