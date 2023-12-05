@@ -1,0 +1,50 @@
+version: "3.7"
+
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  docker-nextcloud:
+    image: nextcloud:27.1.4-apache
+    container_name: docker-nextcloud
+    restart: always
+    tty: true
+    volumes:
+      - ./nextcloud/backup:/var/www/backup
+      - ./nextcloud/data:/var/www/html
+    environment:
+      - REDIS_HOST=172.24.92.213
+#      - REDIS_HOST_PORT=6379
+#      - REDIS_HOST_PASSWORD=
+      - MYSQL_HOST=rm-bp1rzlpmxk717y499.mysql.rds.aliyuncs.com
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=kajqo5-vutJyg-pistat
+    labels:
+      - "traefik.http.routers.nextcloud.entrypoints=http"
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.uqiantu.com`)"
+
+      - "traefik.http.routers.nextcloud-secure.entrypoints=https"
+      - "traefik.http.routers.nextcloud-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.nextcloud-secure.rule=Host(`nextcloud.uqiantu.com`)"
+      - "traefik.http.routers.nextcloud-secure.middlewares=nextcloud_redirectregex,nextcloud_headers"
+
+      - "traefik.http.middlewares.nextcloud_redirectregex.redirectregex.permanent=true"
+      - "traefik.http.middlewares.nextcloud_redirectregex.redirectregex.regex=https://(.*)/.well-known/(?:card|cal)dav"
+      - "traefik.http.middlewares.nextcloud_redirectregex.redirectregex.replacement=https://$${1}/remote.php/dav"
+
+      - "traefik.http.middlewares.nextcloud_headers.headers.stsSeconds=15552000"
+    networks:
+      - traefik_web-network
+
+  docker-cron:
+    image: nextcloud:27.1.4-apache
+    container_name: docker-cron
+    restart: always
+    tty: true
+    volumes:
+      - ./nextcloud/data:/var/www/html
+    entrypoint: /cron.sh
+    networks:
+      - traefik_web-network
