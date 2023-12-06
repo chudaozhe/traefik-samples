@@ -1,0 +1,56 @@
+version: "3.7"
+
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  mastodon-web:
+    image: ghcr.io/mastodon/mastodon:v4.2.1
+    restart: always
+    env_file: .env.production
+    command: bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000"
+    healthcheck:
+      # prettier-ignore
+      test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:3000/health || exit 1']
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./public/system:/mastodon/public/system
+    networks:
+      - traefik_web-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=Host(`mastodon.uqiantu.com`)"
+      - "traefik.http.routers.web.entrypoints=https"
+      - "traefik.http.routers.web.tls.certresolver=myresolver"
+
+  mastodon-streaming:
+    image: ghcr.io/mastodon/mastodon:v4.2.1
+    restart: always
+    env_file: .env.production
+    command: node ./streaming
+    networks:
+      - web-network
+    healthcheck:
+      # prettier-ignore
+      test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
+    ports:
+      - '4000:4000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.streaming.rule=Host(`mastodon.uqiantu.com`) && Path(`/api/v1/streaming`)"
+      - "traefik.http.routers.streaming.entrypoints=https"
+      - "traefik.http.routers.streaming.tls.certresolver=myresolver"
+
+  mastodon-sidekiq:
+    image: ghcr.io/mastodon/mastodon:v4.2.1
+    restart: always
+    env_file: .env.production
+    command: bundle exec sidekiq
+    volumes:
+      - ./public/system:/mastodon/public/system
+    healthcheck:
+      test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
+    networks:
+      - traefik_web-network
