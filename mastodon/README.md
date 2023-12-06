@@ -4,14 +4,7 @@
 
 ### 初始化
 ```
-docker compose -f docker-compose.yml run --rm web bundle exec rake mastodon:setup
-```
-
-上一步执行成功，会启动`db`和`redis`两个容器，同时会提示你输入域名（先别输），先进到`db`容器创建一个给`mastodon`用的数据库，如下创建一个用户和数据库，名称都是`mastodon`，密码为空
-```
-psql -U postgres
-CREATE USER mastodon CREATEDB;
-create database mastodon owner mastodon encoding UTF8;
+docker compose -f docker-compose.yml run --rm mastodon-web bundle exec rake mastodon:setup
 ```
 
 接着，按照提示，一步步来

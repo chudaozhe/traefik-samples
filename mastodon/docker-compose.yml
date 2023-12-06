@@ -30,13 +30,13 @@ services:
     restart: always
     env_file: .env.production
     command: node ./streaming
-    networks:
-      - web-network
     healthcheck:
       # prettier-ignore
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
     ports:
       - '4000:4000'
+    networks:
+      - traefik_web-network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.streaming.rule=Host(`mastodon.uqiantu.com`) && Path(`/api/v1/streaming`)"
