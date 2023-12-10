@@ -7,7 +7,7 @@ networks:
 services:
   web:
     image: ghcr.io/mastodon/mastodon:v4.2.1
-    restart: always
+    restart: unless-stopped
     env_file: .env.production
     command: bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000"
     healthcheck:
@@ -21,15 +21,15 @@ services:
       - traefik_web-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mastodon-web.entrypoints=https"
-      - "traefik.http.routers.mastodon-web.rule=Host(`mastodon.uqiantu.com`)"
-      - "traefik.http.routers.mastodon-web.tls.certresolver=myresolver"
-      - "traefik.http.services.mastodon-web.loadbalancer.server.port=3000"
-      - "traefik.http.routers.mastodon-web.service=mastodon-web"
+      - "traefik.http.routers.mastodon.entrypoints=https"
+      - "traefik.http.routers.mastodon.rule=Host(`mastodon.uqiantu.com`)"
+      - "traefik.http.routers.mastodon.tls.certresolver=myresolver"
+      - "traefik.http.routers.mastodon.service=mastodon"
+      - "traefik.http.services.mastodon.loadbalancer.server.port=3000"
 
   streaming:
     image: ghcr.io/mastodon/mastodon:v4.2.1
-    restart: always
+    restart: unless-stopped
     env_file: .env.production
     command: node ./streaming
     healthcheck:
@@ -41,15 +41,15 @@ services:
       - traefik_web-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mastodon-streaming.entrypoints=https"
-      - "traefik.http.routers.mastodon-streaming.rule=(Host(`mastodon.uqiantu.com`) && Path(`/api/v1/streaming`))"
-      - "traefik.http.routers.mastodon-streaming.tls.certresolver=myresolver"
-      - "traefik.http.services.mastodon-streaming.loadbalancer.server.port=4000"
-      - "traefik.http.routers.mastodon-streaming.service=mastodon-streaming"
+      - "traefik.http.routers.mastodon-api.entrypoints=https"
+      - "traefik.http.routers.mastodon-api.rule=Host(`mastodon.uqiantu.com`) && PathPrefix(`/api/v1/streaming`)"
+      - "traefik.http.routers.mastodon-api.tls.certresolver=myresolver"
+      - "traefik.http.routers.mastodon-api.service=mastodon-api"
+      - "traefik.http.services.mastodon-api.loadbalancer.server.port=4000"
 
   sidekiq:
     image: ghcr.io/mastodon/mastodon:v4.2.1
-    restart: always
+    restart: unless-stopped
     env_file: .env.production
     command: bundle exec sidekiq
     volumes:

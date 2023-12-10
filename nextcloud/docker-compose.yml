@@ -8,7 +8,7 @@ services:
   docker-nextcloud:
     image: nextcloud:27.1.4-apache
     container_name: docker-nextcloud
-    restart: always
+    restart: unless-stopped
     tty: true
     volumes:
       - ./backup:/var/www/backup
@@ -41,7 +41,7 @@ services:
   docker-cron:
     image: nextcloud:27.1.4-apache
     container_name: docker-cron
-    restart: always
+    restart: unless-stopped
     tty: true
     volumes:
       - ./data:/var/www/html
