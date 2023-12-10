@@ -5,7 +5,7 @@ networks:
     external: true
 
 services:
-  mastodon-web:
+  web:
     image: ghcr.io/mastodon/mastodon:v4.2.1
     restart: always
     env_file: .env.production
@@ -21,11 +21,13 @@ services:
       - traefik_web-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.web.rule=Host(`mastodon.uqiantu.com`)"
-      - "traefik.http.routers.web.entrypoints=https"
-      - "traefik.http.routers.web.tls.certresolver=myresolver"
+      - "traefik.http.routers.mastodon-web.entrypoints=https"
+      - "traefik.http.routers.mastodon-web.rule=Host(`mastodon.uqiantu.com`)"
+      - "traefik.http.routers.mastodon-web.tls.certresolver=myresolver"
+      - "traefik.http.services.mastodon-web.loadbalancer.server.port=3000"
+      - "traefik.http.routers.mastodon-web.service=mastodon-web"
 
-  mastodon-streaming:
+  streaming:
     image: ghcr.io/mastodon/mastodon:v4.2.1
     restart: always
     env_file: .env.production
@@ -39,11 +41,13 @@ services:
       - traefik_web-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.streaming.rule=Host(`mastodon.uqiantu.com`) && Path(`/api/v1/streaming`)"
-      - "traefik.http.routers.streaming.entrypoints=https"
-      - "traefik.http.routers.streaming.tls.certresolver=myresolver"
+      - "traefik.http.routers.mastodon-streaming.entrypoints=https"
+      - "traefik.http.routers.mastodon-streaming.rule=Host(`mastodon.uqiantu.com`) && Path(`/api/v1/streaming`)"
+      - "traefik.http.routers.mastodon-streaming.tls.certresolver=myresolver"
+      - "traefik.http.services.mastodon-streaming.loadbalancer.server.port=4000"
+      - "traefik.http.routers.mastodon-streaming.service=mastodon-streaming"
 
-  mastodon-sidekiq:
+  sidekiq:
     image: ghcr.io/mastodon/mastodon:v4.2.1
     restart: always
     env_file: .env.production
