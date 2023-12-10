@@ -6,6 +6,7 @@ networks:
 services:
   reverse-proxy:
     image: traefik:v3.0
+    restart: always
     command:
       - "--configFile=/etc/traefik/traefik.yml"  # 使用静态配置文件
       - "/bin/sh"

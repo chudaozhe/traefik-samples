@@ -42,7 +42,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mastodon-streaming.entrypoints=https"
-      - "traefik.http.routers.mastodon-streaming.rule=Host(`mastodon.uqiantu.com`) && Path(`/api/v1/streaming`)"
+      - "traefik.http.routers.mastodon-streaming.rule=(Host(`mastodon.uqiantu.com`) && Path(`/api/v1/streaming`))"
       - "traefik.http.routers.mastodon-streaming.tls.certresolver=myresolver"
       - "traefik.http.services.mastodon-streaming.loadbalancer.server.port=4000"
       - "traefik.http.routers.mastodon-streaming.service=mastodon-streaming"
