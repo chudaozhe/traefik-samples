@@ -4,7 +4,9 @@
 
 ### 初始化
 ```
-docker compose -f docker-compose.yml run --rm mastodon-web bundle exec rake mastodon:setup
+[root@iZbp1bdfdjdh5y8aetd7jiZ mastodon]# chmod 777 .env.production 
+
+docker compose -f docker-compose.yml run --rm -p 465:465 -v $(pwd)/.env.production:/opt/mastodon/.env.production web bundle exec rake mastodon:setup
 ```
 
 接着，按照提示，一步步来
@@ -40,3 +42,6 @@ git clone git@github.com:mastodon/mastodon.git
 根目录有个`.env.production.sample`文件，改名为 `.env.production`，(必须的)
 
 如果是初次运行，记得把里面`LOCAL_DOMAIN`, `PostgreSQL`，`redis`这些你知道的都配好（不配也可以，只是最后一步创建管理员账号会失败）
+
+## 参考
+https://github.com/ndi-ct/traefik-mastodon/blob/main/mastodon/docker-compose.yml
