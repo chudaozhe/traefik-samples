@@ -1,0 +1,31 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  pandora:
+    image: pengzhile/pandora-next:0.3.1
+    container_name: PandoraNext
+    restart: always
+#    ports:
+#      - "8899:8899"
+#    environment:
+#      - PANDORA_NEXT_LICENSE="在这里获取：https://dash.pandoranext.com"
+    volumes:
+      - ./data:/data
+    networks:
+      - traefik_web-network
+    labels:
+      - "traefik.http.routers.pandora.entrypoints=http"
+      - "traefik.http.routers.pandora.rule=Host(`chat.uqiantu.com`)"
+
+      - "traefik.http.routers.pandora-secure.entrypoints=https"
+      - "traefik.http.routers.pandora-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.pandora-secure.rule=Host(`chat.uqiantu.com`)"
+
+      - "traefik.http.routers.pandora-secure.service=pandora-secure"
+      - "traefik.http.services.pandora-secure.loadbalancer.server.port=8899"

@@ -1,0 +1,11 @@
+{
+  "license_id": "",
+  "bind": "0.0.0.0:8899",
+  "timeout": 600,
+  "proxy_url": "",
+  "public_share": true,
+  "site_password": "123",
+  "setup_password": "123",
+  "server_tokens": true,
+  "whitelist": null
+}
