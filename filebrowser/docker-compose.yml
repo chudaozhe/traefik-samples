@@ -1,0 +1,31 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:v2.26.0
+#    ports:
+#      - "8080:80"
+    restart: unless-stopped
+    volumes:
+      - ./data:/srv
+#      - ./data/filebrowser.db:/database.db
+#      - ./data/.filebrowser.json:/.filebrowser.json
+    user: "${UID}:${GID}"
+    networks:
+      - traefik_web-network
+    labels:
+      - "traefik.http.routers.filebrowser.entrypoints=http"
+      - "traefik.http.routers.filebrowser.rule=Host(`filebrowser.uqiantu.com`)"
+
+      - "traefik.http.routers.filebrowser-secure.entrypoints=https"
+      - "traefik.http.routers.filebrowser-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.filebrowser-secure.rule=Host(`filebrowser.uqiantu.com`)"
+
+      - "traefik.http.routers.filebrowser-secure.service=filebrowser-secure"
+      - "traefik.http.services.filebrowser-secure.loadbalancer.server.port=80"
