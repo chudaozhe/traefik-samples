@@ -2,6 +2,11 @@
 # https://doc.traefik.io/traefik/reference/dynamic-configuration/file/
 
 http:
+  middlewares:
+    authtraefik:
+      basicAuth:
+        users:
+          - "admin:$apr1$igynrxQA$kbjiuty8FPtu3vQLWfhOX."
   routers:
     traefik-dashboard:
       entrypoints: "https"
@@ -9,6 +14,7 @@ http:
       service: "dashboard@internal"
       tls:
         certResolver: myresolver
+      middlewares: authtraefik
     traefik-dashboard-api:
       entrypoints: "https"
       rule: "Host(`traefik.uqiantu.com`) && PathPrefix(`/api`)"
