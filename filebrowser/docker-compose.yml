@@ -14,9 +14,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./data:/srv
-#      - ./data/filebrowser.db:/database.db
-#      - ./data/.filebrowser.json:/.filebrowser.json
-    user: "${UID}:${GID}"
+#      - ./filebrowser.db:/database.db
+      - ./.filebrowser.json:/.filebrowser.json
+    user: root
     networks:
       - traefik_web-network
     labels:
@@ -26,6 +26,10 @@ services:
       - "traefik.http.routers.filebrowser-secure.entrypoints=https"
       - "traefik.http.routers.filebrowser-secure.tls.certResolver=myresolver"
       - "traefik.http.routers.filebrowser-secure.rule=Host(`filebrowser.uqiantu.com`)"
+
+      - "traefik.http.middlewares.test-compress.compress=true"
+      - "traefik.http.middlewares.test-compress.compress.minresponsebodybytes=1024"
+      - "traefik.http.routers.filebrowser-secure.middlewares=test-compress"
 
       - "traefik.http.routers.filebrowser-secure.service=filebrowser-secure"
       - "traefik.http.services.filebrowser-secure.loadbalancer.server.port=80"
