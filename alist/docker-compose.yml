@@ -1,0 +1,33 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  alist:
+    image: 'xhofe/alist:v3.29.1'
+    restart: unless-stopped
+    volumes:
+      - './data:/opt/alist/data'
+#    ports:
+#      - '5244:5244'
+    environment:
+      - PUID=0
+      - PGID=0
+      - UMASK=022
+      - TZ=UTC
+    networks:
+      - traefik_web-network
+    labels:
+      - "traefik.http.routers.alist.entrypoints=http"
+      - "traefik.http.routers.alist.rule=Host(`alist.uqiantu.com`)"
+
+      - "traefik.http.routers.alist-secure.entrypoints=https"
+      - "traefik.http.routers.alist-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.alist-secure.rule=Host(`alist.uqiantu.com`)"
+
+      - "traefik.http.routers.alist-secure.service=alist-secure"
+      - "traefik.http.services.alist-secure.loadbalancer.server.port=5244"
