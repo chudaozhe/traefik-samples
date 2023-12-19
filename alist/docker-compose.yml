@@ -8,7 +8,8 @@ networks:
 
 services:
   alist:
-    image: 'xhofe/alist:v3.29.1'
+#    xhofe/alist:v3.29.1
+    image: 'xhofe/alist-aria2:v3.29.1'
     restart: unless-stopped
     volumes:
       - './data:/opt/alist/data'
