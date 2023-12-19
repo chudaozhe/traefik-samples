@@ -1,0 +1,38 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  qbittorrent:
+    image: linuxserver/qbittorrent:4.6.2
+    restart: unless-stopped
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Shanghai
+      - UMASK_SET=022
+      - WEBUI_PORT=8081
+    volumes:
+      - ./config:/config
+      - ./downloads:/downloads
+#    ports:
+#      - 6881:6881
+#      - 6881:6881/udp
+#      - 8081:8081
+    labels:
+      - "traefik.http.routers.qbittorrent.entrypoints=http"
+      - "traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.uqiantu.com`)"
+
+      - "traefik.http.routers.qbittorrent-secure.entrypoints=https"
+      - "traefik.http.routers.qbittorrent-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.qbittorrent-secure.rule=Host(`qbittorrent.uqiantu.com`)"
+
+      - "traefik.http.routers.qbittorrent-secure.service=qbittorrent-secure"
+      - "traefik.http.services.qbittorrent-secure.loadbalancer.server.port=8081"
+    networks:
+      - traefik_web-network
