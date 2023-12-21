@@ -1,0 +1,28 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  chineseocr:
+    image: registry.cn-hangzhou.aliyuncs.com/cuiw/chineseocr:20211227
+    hostname: chineseocr
+    restart: unless-stopped
+    tty: true
+#    ports:
+#      - 7071:7071
+    labels:
+      - "traefik.http.routers.chineseocr.entrypoints=http"
+      - "traefik.http.routers.chineseocr.rule=Host(`chineseocr.uqiantu.com`)"
+
+      - "traefik.http.routers.chineseocr-secure.entrypoints=https"
+      - "traefik.http.routers.chineseocr-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.chineseocr-secure.rule=Host(`chineseocr.uqiantu.com`)"
+
+      - "traefik.http.routers.chineseocr-secure.service=chineseocr-secure"
+      - "traefik.http.services.chineseocr-secure.loadbalancer.server.port=7071"
+    networks:
+      - traefik_web-network
