@@ -12,7 +12,8 @@ services:
     image: 'xhofe/alist-aria2:v3.29.1'
     restart: unless-stopped
     volumes:
-      - './data:/opt/alist/data'
+      - ./data:/opt/alist/data
+      - ./downloads:/downloads
 #    ports:
 #      - '5244:5244'
     environment:
