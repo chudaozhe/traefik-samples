@@ -1,0 +1,29 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  ent:
+    image: registry.cn-hangzhou.aliyuncs.com/cuiw/ent:1.1-release
+    hostname: ent
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ../www/ent/data:/data/data
+      - ../www/ent/logs:/data/logs
+    labels:
+      - "traefik.http.routers.ent.entrypoints=http"
+      - "traefik.http.routers.ent.rule=Host(`ent.uqiantu.com`)"
+
+      - "traefik.http.routers.ent-secure.entrypoints=https"
+      - "traefik.http.routers.ent-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.ent-secure.rule=Host(`ent.uqiantu.com`)"
+
+      - "traefik.http.routers.ent-secure.service=ent-secure"
+      - "traefik.http.services.ent-secure.loadbalancer.server.port=8097"
+    networks:
+      - traefik_web-network
