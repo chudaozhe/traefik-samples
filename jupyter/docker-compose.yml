@@ -1,0 +1,28 @@
+version: "3.7"
+
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  jupyter:
+    image: "jupyter/base-notebook:lab-4.0.7"
+    hostname: jupyter
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./data:/home/jovyan
+#    ports:
+#      - "8888:8888"
+    labels:
+      - "traefik.http.routers.jupyter.entrypoints=http"
+      - "traefik.http.routers.jupyter.rule=Host(`jupyter.uqiantu.com`)"
+
+      - "traefik.http.routers.jupyter-secure.entrypoints=https"
+      - "traefik.http.routers.jupyter-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.jupyter-secure.rule=Host(`jupyter.uqiantu.com`)"
+
+      - "traefik.http.routers.jupyter-secure.service=jupyter-secure"
+      - "traefik.http.services.jupyter-secure.loadbalancer.server.port=8888"
+    networks:
+      - traefik_web-network
