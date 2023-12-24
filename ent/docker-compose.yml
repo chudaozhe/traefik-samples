@@ -8,13 +8,13 @@ networks:
 
 services:
   ent:
-    image: registry.cn-hangzhou.aliyuncs.com/cuiw/ent:1.1-release
+    image: chudaozhe/ent:api1.0-release
     hostname: ent
     restart: unless-stopped
     tty: true
     volumes:
-      - ../www/ent/data:/data/data
-      - ../www/ent/logs:/data/logs
+      - ./data:/data/data
+      - ./logs:/data/logs
     labels:
       - "traefik.http.routers.ent.entrypoints=http"
       - "traefik.http.routers.ent.rule=Host(`ent.uqiantu.com`)"
@@ -25,5 +25,15 @@ services:
 
       - "traefik.http.routers.ent-secure.service=ent-secure"
       - "traefik.http.services.ent-secure.loadbalancer.server.port=8097"
+    networks:
+      - traefik_web-network
+
+  admin:
+    image: chudaozhe/ent:admin1.0-release
+    hostname: admin
+    restart: unless-stopped
+    tty: true
+    labels:
+      - "traefik.http.routers.admin.rule=Host(`ent.uqiantu.com`) && PathPrefix(`/console`)"
     networks:
       - traefik_web-network
