@@ -1,0 +1,31 @@
+version: "3.7"
+
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  chatgptnextweb:
+    image: yidadaa/chatgpt-next-web:v2.10.1
+    container_name: chatgptnextweb
+    restart: unless-stopped
+    # ports:
+    #   - 3000:3000
+    environment:
+      # - GOOGLE_API_KEY=AIzaSyDxRSVebSxc05aCCTPsBxOuQI3OrjewB9I
+      # - GOOGLE_URL=https://gemini.yuandaxia.com/v1beta/models/gemini-pro:generateContent
+      # - OPENAI_API_KEY=sk-xxxx
+      - CODE=123
+      # - PROXY_URL=http://localhost:7890
+    labels:
+      - "traefik.http.routers.chatgptnextweb.entrypoints=http"
+      - "traefik.http.routers.chatgptnextweb.rule=Host(`chatgptnextweb.uqiantu.com`)"
+
+      - "traefik.http.routers.chatgptnextweb-secure.entrypoints=https"
+      - "traefik.http.routers.chatgptnextweb-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.chatgptnextweb-secure.rule=Host(`chatgptnextweb.uqiantu.com`)"
+
+      - "traefik.http.routers.chatgptnextweb-secure.service=chatgptnextweb-secure"
+      - "traefik.http.services.chatgptnextweb-secure.loadbalancer.server.port=3000"
+    networks:
+      - traefik_web-network
