@@ -6,7 +6,8 @@ networks:
 
 services:
   jupyter:
-    image: "jupyter/base-notebook:lab-4.0.7"
+#    jupyter/base-notebook:lab-4.0.7
+    image: "jupyter/minimal-notebook:lab-4.0.7"
     hostname: jupyter
     restart: unless-stopped
     tty: true
