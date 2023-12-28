@@ -1,0 +1,31 @@
+version: "3.7"
+
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  geminiprochat:
+    image: babaohuang/geminiprochat:latest
+    container_name: geminiprochat
+    restart: unless-stopped
+    # ports:
+    #   - 3000:3000
+    environment:
+      - GEMINI_API_KEY=AIzaSyDxRSVebSxc05aCCTPsBxOuQI3OrjewB9I
+      - API_BASE_URL=https://gemini.yuandaxia.com
+      # - HEAD_SCRIPTS=
+      # - PUBLIC_SECRET_KEY=
+      # - SITE_PASSWORD=
+    labels:
+      - "traefik.http.routers.geminiprochat.entrypoints=http"
+      - "traefik.http.routers.geminiprochat.rule=Host(`geminiprochat.uqiantu.com`)"
+
+      - "traefik.http.routers.geminiprochat-secure.entrypoints=https"
+      - "traefik.http.routers.geminiprochat-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.geminiprochat-secure.rule=Host(`geminiprochat.uqiantu.com`)"
+
+      - "traefik.http.routers.geminiprochat-secure.service=geminiprochat-secure"
+      - "traefik.http.services.geminiprochat-secure.loadbalancer.server.port=3000"
+    networks:
+      - traefik_web-network
