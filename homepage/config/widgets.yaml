@@ -1,0 +1,21 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/service-widgets
+
+ - resources:
+     cpu: true
+     memory: true
+     disk: /
+     cputemp: true # disabled by default
+     uptime: true # disabled by default
+     expanded: true # show the expanded view
+
+ - search:
+     provider: [bing, baidu]
+     target: _blank
+
+ - openmeteo:
+     label: 当前
+     latitude: 39.81
+     longitude: 116.50
+     cache: 5

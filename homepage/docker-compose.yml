@@ -1,0 +1,45 @@
+version: "3.7"
+
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:v0.8.4
+    container_name: homepage
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - LOG_LEVEL=debug
+    labels:
+      - "traefik.http.routers.homepage.entrypoints=http"
+      - "traefik.http.routers.homepage.rule=Host(`homepage.uqiantu.com`, `homepage.local`)"
+
+      - "traefik.http.routers.homepage-secure.entrypoints=https"
+      - "traefik.http.routers.homepage-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.homepage-secure.rule=Host(`homepage.uqiantu.com`)"
+
+      - "traefik.http.routers.homepage-secure.service=homepage-secure"
+      - "traefik.http.services.homepage-secure.loadbalancer.server.port=3000"
+    networks:
+      - traefik_web-network
+
+  whoami:
+    # A container that exposes an API to show its IP address
+    image: traefik/whoami:v1.10.1
+    container_name: whoami
+    restart: unless-stopped
+    labels:
+      - "traefik.http.routers.whoami.rule=Host(`homepage.uqiantu.com`) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.middlewares=whoami-ratelimit,whoami-retry"
+      - "traefik.http.middlewares.whoami-ratelimit.ratelimit.average=1"
+      - "traefik.http.middlewares.whoami-ratelimit.ratelimit.burst=1"
+      - "traefik.http.middlewares.whoami-retry.retry.attempts=4"
+      - "traefik.http.middlewares.whoami-retry.retry.initialinterval=100ms"
+    networks:
+      - traefik_web-network
