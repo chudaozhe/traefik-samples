@@ -24,3 +24,14 @@ services:
       - ./data/backup:/backup
     networks:
       - web-network
+
+  avahi-helper:
+    # 这个容器会将以 .local 结尾的 Host 广播出去
+    # 在同一个同一个局域网的用户就都能访问到了
+    image: hardillb/traefik-avahi-helper:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket
+    networks:
+      - web-network
