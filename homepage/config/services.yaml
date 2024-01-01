@@ -2,64 +2,59 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/services
 
-- My First Group:
-      - Traefik Service:
-            href: https://traefik.uqiantu.com
-            description: Traefik is awesome
-            # server: reverse-proxy
-            container: traefik-reverse-proxy-1
-            widget:
-                type: traefik
-                url: https://traefik.uqiantu.com
-                username: admin # optional
-                password: cuiwei.net # optional
-      - qBittorrent Service:
-            href: https://qbittorrent.uqiantu.com
-            description: qBittorrent is awesome
-            widget:
-                type: qbittorrent
-                url: https://qbittorrent.uqiantu.com
-                username: admin
-                password: XLZpsn72Y
-      - Nextcloud Service:
-            href: https://nextcloud.uqiantu.com
-            description: Nextcloud is awesome
-            widget:
-                type: nextcloud
-                url: https://nextcloud.uqiantu.com
-                # username: username
-                # password: password
-      - Portainer Service:
-            href: https://portainer.uqiantu.com
-            description: Portainer is awesome
-            widget:
-                type: portainer
-                url: https://portainer.uqiantu.com
-                env: 1
-                key: ptr_pgcYW68yszOIFULjWuhRywlnMsSQYgykXhgVvJRqLWM=
+- My Service Group:
+    - Traefik:
+        icon: traefik.png
+        href: https://traefik.uqiantu.com
+        description: Traefik is awesome
+        server: my-docker
+        container: traefik-reverse-proxy-1
+        showStats: true
+        siteMonitor: https://www.cuiwei.net
+        widget:
+          type: traefik
+          url: https://traefik.uqiantu.com
+          username: admin # optional
+          password: admin # optional
 
-- My Second Group:
-      - My Second Service:
-            href: http://localhost/
-            description: Homepage is the best
+    - qBittorrent:
+        icon: qbittorrent.png
+        href: https://qbittorrent.uqiantu.com
+        description: qBittorrent is awesome
+        server: my-docker
+        container: qbittorrent
+        showStats: true
+        siteMonitor: https://www.cuiwei.net
+        widget:
+          type: qbittorrent
+          url: https://qbittorrent.uqiantu.com
+          username: admin
+          password: 4scYaDXGI
 
-- My Third Group:
-      - My Third Service:
-            href: http://localhost/
-            description: Homepage is 😎
+    - Nextcloud:
+        icon: nextcloud.png
+        href: https://nextcloud.uqiantu.com
+        description: Nextcloud is awesome
+        server: my-docker
+        container: docker-nextcloud
+        showStats: true
+        siteMonitor: https://www.cuiwei.net
+        widget:
+          type: nextcloud
+          url: https://nextcloud.uqiantu.com
+          username: admin2
+          password: admin
 
-- Group A:
-      - Sonarr:
-            icon: sonarr.png
-            href: http://sonarr.host/
-            description: Series management
-            ping: sonarr.host
-            showStats: true
-      - Radarr:
-            icon: radarr.png
-            href: http://radarr.host/
-            description: Movie management
-      - Service:
-            icon: mdi-flask-outline
-            href: http://service.host/
-            description: My cool service
+    - Portainer:
+        icon: portainer.png
+        href: https://portainer.uqiantu.com
+        description: Portainer is awesome
+        server: my-docker
+        container: portainer-portainer-1
+        showStats: true
+        siteMonitor: https://www.cuiwei.net
+        widget:
+          type: portainer
+          url: https://portainer.uqiantu.com
+          env: 1
+          key: ptr_pgcYW68yszOIFULjWuhRywlnMsSQYgykXhgVvJRqLWM=

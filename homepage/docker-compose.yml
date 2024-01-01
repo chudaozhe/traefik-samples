@@ -9,8 +9,8 @@ services:
     image: ghcr.io/gethomepage/homepage:v0.8.4
     container_name: homepage
     restart: unless-stopped
-    ports:
-      - 3000:3000
+    # ports:
+    #   - 3000:3000
     volumes:
       - ./config:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock
@@ -41,5 +41,10 @@ services:
       - "traefik.http.middlewares.whoami-ratelimit.ratelimit.burst=1"
       - "traefik.http.middlewares.whoami-retry.retry.attempts=4"
       - "traefik.http.middlewares.whoami-retry.retry.initialinterval=100ms"
+      - homepage.group=Media
+      - homepage.name=Emby
+      - homepage.icon=emby.png
+      - homepage.href=http://homepage.uqiantu.com/whoami
+      - homepage.description=Media server
     networks:
       - traefik_web-network

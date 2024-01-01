@@ -5,18 +5,23 @@
 
 title: My Awesome Homepage2
 startUrl: https://homepage.uqiantu.com/
-#background: https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80
+# background: https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80
 language: zh-CN
 layout:
- My First Group:
-   style: row
-   columns: 4
+  My Service Group:
+    tab: First
+    style: row
+    columns: 4
+  Developer:
+    tab: Second
+    style: row
+    columns: 4
 
 quicklaunch:
- searchDescriptions: true
- hideInternetSearch: false
- hideVisitURL: false
+  searchDescriptions: true
+  hideInternetSearch: false
+  hideVisitURL: false
 
 providers:
- openweathermap: openweathermapapikey
- weatherapi: weatherapiapikey
+  openweathermap: openweathermapapikey
+  weatherapi: weatherapiapikey

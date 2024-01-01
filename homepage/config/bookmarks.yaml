@@ -3,16 +3,22 @@
 # https://gethomepage.dev/latest/configs/bookmarks
 
 - Developer:
-   - Github:
-       - abbr: GH
-         href: https://github.com/
+    - Github:
+        - abbr: GH
+          icon: github.png
+          href: https://github.com/
+    - VSCode:
+        - abbr: VS
+          icon: code.png
+          href: https://vscode.dev/
+- 娱乐:
+    - Bilibili:
+        - abbr: BL
+          icon: si-bilibili
+          href: https://bilibili.com/
 
-- Social:
-   - Reddit:
-       - abbr: RE
-         href: https://reddit.com/
-
-- Entertainment:
-   - YouTube:
-       - abbr: YT
-         href: https://youtube.com/
+- 购物:
+    - Taobao:
+        - abbr: TB
+          icon: si-taobao
+          href: https://taobao.com/
