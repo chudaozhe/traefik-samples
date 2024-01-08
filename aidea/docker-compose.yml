@@ -1,0 +1,39 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  web:
+    image: chudaozhe/aidea:web1.0-release
+    restart: unless-stopped
+    tty: true
+    networks:
+      - traefik_web-network
+    labels:
+      - "traefik.http.routers.aidea.entrypoints=http"
+      - "traefik.http.routers.aidea.rule=Host(`aidea.uqiantu.com`)"
+
+      - "traefik.http.routers.aidea-secure.entrypoints=https"
+      - "traefik.http.routers.aidea-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.aidea-secure.rule=Host(`aidea.uqiantu.com`)"
+
+      - "traefik.http.routers.aidea-secure.service=aidea-secure"
+      - "traefik.http.services.aidea-secure.loadbalancer.server.port=80"
+
+  api:
+    image: mylxsw/aidea-server:1.0.11
+    restart: unless-stopped
+    volumes:
+      - ./etc/config.yaml:/etc/aidea.yaml
+      - ./etc/coins-table.yaml:/etc/aidea-coins-table.yaml
+      - ./data:/data
+    networks:
+      - traefik_web-network
+    labels:
+      - "traefik.http.routers.aidea-api.rule=Host(`aidea.uqiantu.com`) && (PathPrefix(`/v1`) || PathPrefix(`/v2`) || PathPrefix(`/public`))"
+      - "traefik.http.routers.aidea-api.service=aidea-api"
+      - "traefik.http.services.aidea-api.loadbalancer.server.port=8080"
