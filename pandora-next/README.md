@@ -4,11 +4,26 @@
 docker-compose up -d
 ```
 
-网页访问：
+## 获取 Access/Session Token。
+- 获取到的 Access Token 有效期为10天。
+- 获取到的 Session Token 有效期为3月。
 
-http://localhost:8899/
+https://chat.uqiantu.com/11proxy11/auth
 
-获取accessToken
+## 获取 Share Token
+https://chat.uqiantu.com/11proxy11/fk
+
+## 把Share Tokens组成池令牌，以便API使用时并发。
+https://chat.uqiantu.com/11proxy11/pk
+
+## Share Token 代替 API Key
+- 服务器地址 `https://chat.uqiantu.com/11proxy11/v1`
+- api key `fk-6D8...`
+
+## 文档
+https://docs.pandoranext.com/zh-CN/api-reference/proxy
+
+## 从官网获取accessToken
 
 https://chat.openai.com/api/auth/session
 
