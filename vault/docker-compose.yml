@@ -1,0 +1,41 @@
+version: '3.7'
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  vault:
+    image: hashicorp/vault:1.15.4
+    container_name: vault
+#    ports:
+#      - "8200:8200"
+    restart: unless-stopped
+    volumes:
+      # 审计日志存储目录（`file` audit backend）
+      - ./logs:/vault/logs
+      # 使用文件做数据存储（单节点）
+      - ./file:/vault/file
+      - ./config.hcl:/vault/config/config.hcl
+      # TLS 证书
+      - ./certs:/certs
+    # vault 需要锁定内存以防止敏感值信息被交换(swapped)到磁盘中
+    # 为此需要添加如下 capability
+    cap_add:
+      - IPC_LOCK
+    # 必须设定 entrypoint，否则 vault 容器默认以 development 模式运行
+    entrypoint: vault server -config /vault/config/config.hcl
+    labels:
+      - "traefik.http.routers.vault.entrypoints=http"
+      - "traefik.http.routers.vault.rule=Host(`vault.uqiantu.com`)"
+
+      - "traefik.http.routers.vault-secure.entrypoints=https"
+      - "traefik.http.routers.vault-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.vault-secure.rule=Host(`vault.uqiantu.com`)"
+
+      - "traefik.http.routers.vault-secure.service=vault-secure"
+      - "traefik.http.services.vault-secure.loadbalancer.server.port=8200"
+    networks:
+      - traefik_web-network
