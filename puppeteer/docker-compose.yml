@@ -12,10 +12,10 @@ services:
     container_name: puppeteer
     restart: unless-stopped
     volumes:
-      - ./app:/app
+      - ./app/server.js:/home/pptruser/server.js
     cap_add:
       - SYS_ADMIN
-    entrypoint: node /app/server.js
+    entrypoint: node /home/pptruser/server.js
     labels:
       - "traefik.http.routers.puppeteer.entrypoints=http"
       - "traefik.http.routers.puppeteer.rule=Host(`puppeteer.uqiantu.com`)"
