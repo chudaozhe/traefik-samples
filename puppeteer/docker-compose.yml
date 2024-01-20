@@ -1,0 +1,30 @@
+version: '3.7'
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  puppeteer:
+    image: ghcr.io/puppeteer/puppeteer:21.7.0
+    container_name: puppeteer
+    restart: unless-stopped
+    volumes:
+      - ./app:/app
+    cap_add:
+      - SYS_ADMIN
+    entrypoint: node /app/server.js
+    labels:
+      - "traefik.http.routers.puppeteer.entrypoints=http"
+      - "traefik.http.routers.puppeteer.rule=Host(`puppeteer.uqiantu.com`)"
+
+      - "traefik.http.routers.puppeteer-secure.entrypoints=https"
+      - "traefik.http.routers.puppeteer-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.puppeteer-secure.rule=Host(`puppeteer.uqiantu.com`)"
+
+      - "traefik.http.routers.puppeteer-secure.service=puppeteer-secure"
+      - "traefik.http.services.puppeteer-secure.loadbalancer.server.port=3000"
+    networks:
+      - traefik_web-network
