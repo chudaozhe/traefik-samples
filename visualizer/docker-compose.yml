@@ -1,0 +1,30 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  viz:
+    image: dockersamples/visualizer:latest
+    restart: unless-stopped
+    stop_grace_period: 1m30s
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.http.routers.viz.entrypoints=http"
+      - "traefik.http.routers.viz.rule=Host(`viz.uqiantu.com`)"
+
+      - "traefik.http.routers.viz-secure.entrypoints=https"
+      - "traefik.http.routers.viz-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.viz-secure.rule=Host(`viz.uqiantu.com`)"
+
+      - "traefik.http.routers.viz-secure.service=viz-secure"
+      - "traefik.http.services.viz-secure.loadbalancer.server.port=8080"
+    deploy:
+      placement:
+        constraints: [ node.role == manager ]
+    networks:
+      - traefik_web-network
