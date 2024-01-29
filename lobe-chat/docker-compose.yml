@@ -1,0 +1,32 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  lobe-chat:
+    image: lobehub/lobe-chat:v0.121.4
+    container_name: lobe-chat
+    restart: unless-stopped
+#    ports:
+#      - '3210:3210'
+    env_file: .env
+#    environment:
+#      OPENAI_API_KEY: sk-xxxx
+#      OPENAI_PROXY_URL: https://api-proxy.com/v1
+#      ACCESS_CODE: lobe66
+    labels:
+      - "traefik.http.routers.lobechat.entrypoints=http"
+      - "traefik.http.routers.lobechat.rule=Host(`lobechat.uqiantu.com`)"
+
+      - "traefik.http.routers.lobechat-secure.entrypoints=https"
+      - "traefik.http.routers.lobechat-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.lobechat-secure.rule=Host(`lobechat.uqiantu.com`)"
+
+      - "traefik.http.routers.lobechat-secure.service=lobechat-secure"
+      - "traefik.http.services.lobechat-secure.loadbalancer.server.port=3210"
+    networks:
+      - traefik_web-network
