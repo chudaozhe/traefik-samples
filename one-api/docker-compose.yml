@@ -32,6 +32,6 @@ services:
       - "traefik.http.routers.oneapi-secure.rule=Host(`oneapi.uqiantu.com`)"
 
       - "traefik.http.routers.oneapi-secure.service=oneapi-secure"
-      - "traefik.http.services.oneapi-secure.loadbalancer.server.port=3210"
+      - "traefik.http.services.oneapi-secure.loadbalancer.server.port=3000"
     networks:
       - traefik_web-network
