@@ -1,0 +1,37 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  oneapi:
+    image: justsong/one-api:v0.5.11
+    container_name: oneapi
+    restart: unless-stopped
+    command: --log-dir /var/log/oneapi
+#    ports:
+#      - "3000:3000"
+    volumes:
+      - ./data:/data
+      - ./logs:/var/log/oneapi
+    env_file: .env
+#    environment:
+#      - SQL_DSN=oneapi:123456@tcp(db:3306)/one-api  # 修改此行，或注释掉以使用 SQLite 作为数据库
+#      - REDIS_CONN_STRING=redis://redis
+#      - SESSION_SECRET=random_string  # 修改为随机字符串
+#      - TZ=Asia/Shanghai
+    labels:
+      - "traefik.http.routers.oneapi.entrypoints=http"
+      - "traefik.http.routers.oneapi.rule=Host(`oneapi.uqiantu.com`)"
+
+      - "traefik.http.routers.oneapi-secure.entrypoints=https"
+      - "traefik.http.routers.oneapi-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.oneapi-secure.rule=Host(`oneapi.uqiantu.com`)"
+
+      - "traefik.http.routers.oneapi-secure.service=oneapi-secure"
+      - "traefik.http.services.oneapi-secure.loadbalancer.server.port=3210"
+    networks:
+      - traefik_web-network
