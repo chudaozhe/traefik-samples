@@ -1,0 +1,34 @@
+version: "3.7"
+
+# 使用外部网络
+# docker network create traefik_web-network
+networks:
+  traefik_web-network:
+    external: true
+
+services:
+  jellyfin:
+    image: nyanmisaka/jellyfin
+    restart: unless-stopped
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - ./data/media:/media
+      - ./data/movies:/movies
+    # user: root
+    networks:
+      - traefik_web-network
+    labels:
+      - "traefik.http.routers.jellyfin.entrypoints=http"
+      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.uqiantu.com`)"
+
+      - "traefik.http.routers.jellyfin-secure.entrypoints=https"
+      - "traefik.http.routers.jellyfin-secure.tls.certResolver=myresolver"
+      - "traefik.http.routers.jellyfin-secure.rule=Host(`jellyfin.uqiantu.com`)"
+
+      - "traefik.http.middlewares.test-compress.compress=true"
+      - "traefik.http.middlewares.test-compress.compress.minresponsebodybytes=1024"
+      - "traefik.http.routers.jellyfin-secure.middlewares=test-compress"
+
+      - "traefik.http.routers.jellyfin-secure.service=jellyfin-secure"
+      - "traefik.http.services.jellyfin-secure.loadbalancer.server.port=8096"
